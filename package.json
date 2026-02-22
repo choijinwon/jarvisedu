@@ -6,7 +6,9 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "db:reset": "bash scripts/db-reset.sh",
+    "db:seed": "bash scripts/db-seed.sh"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.56.0",
