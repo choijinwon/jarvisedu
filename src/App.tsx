@@ -1,19 +1,23 @@
 import React, { useState } from "react";
-import { HomeScreen, LogScreen, ScoreScreen, StrategyScreen } from "./screens";
+import { HomeScreen, LogScreen, PricingScreen, ScoreScreen, StrategyScreen } from "./screens";
 import { colors } from "./styles";
 import { useHealth } from "./hooks";
+import { PaywallModal } from "./components";
 
-type TabKey = "home" | "score" | "log" | "strategy";
+type TabKey = "home" | "score" | "log" | "strategy" | "pricing";
 
 const tabs: Array<{ key: TabKey; label: string }> = [
   { key: "home", label: "홈" },
   { key: "score", label: "성적" },
   { key: "log", label: "로그" },
   { key: "strategy", label: "전략" },
+  { key: "pricing", label: "요금" },
 ];
 
 export default function App() {
   const [tab, setTab] = useState<TabKey>("home");
+  const [cycle, setCycle] = useState<"monthly" | "yearly">("monthly");
+  const [paywallOpen, setPaywallOpen] = useState(false);
   const { status, source } = useHealth();
 
   const badgeColor =
@@ -40,6 +44,22 @@ export default function App() {
       {tab === "score" && <ScoreScreen />}
       {tab === "log" && <LogScreen />}
       {tab === "strategy" && <StrategyScreen />}
+      {tab === "pricing" && (
+        <PricingScreen
+          cycle={cycle}
+          onChangeCycle={setCycle}
+          onStartPro={() => setPaywallOpen(true)}
+        />
+      )}
+
+      <PaywallModal
+        open={paywallOpen}
+        onClose={() => setPaywallOpen(false)}
+        onStart={() => {
+          setPaywallOpen(false);
+          alert("결제 연동 전입니다. 다음 단계에서 결제 SDK를 연결해요.");
+        }}
+      />
 
       <nav
         style={{
