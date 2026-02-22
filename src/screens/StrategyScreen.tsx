@@ -1,9 +1,17 @@
 import React from "react";
 import { useStrategy } from "../hooks/useStrategy";
 import { colors, typo, ui } from "../styles";
+import { useReport } from "../hooks/useReport";
+import { openReportPrintView } from "../utils/pdf";
 
 export function StrategyScreen() {
   const { strategy, loading, error, update } = useStrategy();
+  const { report, loading: reportLoading, generate } = useReport();
+
+  const handleGeneratePdf = async () => {
+    const r = await generate();
+    openReportPrintView(r);
+  };
 
   if (loading) return <div style={ui.page}>전략 불러오는 중...</div>;
   if (error) return <div style={ui.page}>오류: {error}</div>;
@@ -38,6 +46,17 @@ export function StrategyScreen() {
         <div style={typo.caption}>전략 가설</div>
         <p style={{ ...typo.body, marginTop: 8 }}>{strategy.hypothesisText}</p>
       </div>
+
+      <button onClick={() => void handleGeneratePdf()} style={{ ...ui.buttonPrimary }} disabled={reportLoading}>
+        {reportLoading ? "리포트 생성 중..." : "상담 리포트 PDF 생성"}
+      </button>
+
+      {report && (
+        <div style={{ ...ui.card, marginTop: 10 }}>
+          <div style={typo.caption}>최근 생성 리포트</div>
+          <div style={{ ...typo.body, marginTop: 6 }}>{report.summaryText}</div>
+        </div>
+      )}
     </div>
   );
 }

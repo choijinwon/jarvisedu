@@ -2,6 +2,8 @@ import { useCallback, useEffect, useState } from "react";
 import { LogEntry } from "../types";
 import { mockApi } from "../services/mockApi";
 
+export type CreateLogInput = Omit<LogEntry, "id">;
+
 export function useLogs() {
   const [logs, setLogs] = useState<LogEntry[]>([]);
   const [loading, setLoading] = useState(true);
@@ -24,5 +26,10 @@ export function useLogs() {
     void load();
   }, [load]);
 
-  return { logs, loading, error, reload: load };
+  const createLog = useCallback(async (input: CreateLogInput) => {
+    await mockApi.createLog(input);
+    await load();
+  }, [load]);
+
+  return { logs, loading, error, reload: load, createLog };
 }

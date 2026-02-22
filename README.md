@@ -8,6 +8,7 @@
 - `src/services/mockApi.ts`
 - `src/hooks/*`
 - `src/screens/*`
+- `src/utils/pdf.ts`
 - `src/App.tsx`
 
 ## 실행
