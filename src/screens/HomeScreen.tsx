@@ -1,43 +1,76 @@
 import React from "react";
 import { useDashboard } from "../hooks/useDashboard";
+import { colors, ui } from "../styles";
+
+function priorityColor(priority: "high" | "medium" | "low") {
+  if (priority === "high") return colors.danger;
+  if (priority === "medium") return colors.warning;
+  return colors.success;
+}
 
 export function HomeScreen() {
   const { data, loading, error, toggleTask, regenerateWeeklyTasks } = useDashboard();
 
-  if (loading) return <div>대시보드 불러오는 중...</div>;
-  if (error) return <div>오류: {error}</div>;
-  if (!data) return <div>데이터가 없습니다.</div>;
+  if (loading) return <div style={ui.page}>대시보드 불러오는 중...</div>;
+  if (error) return <div style={ui.page}>오류: {error}</div>;
+  if (!data) return <div style={ui.page}>데이터가 없습니다.</div>;
 
   return (
-    <div style={{ padding: 16 }}>
-      <h2>홈 대시보드</h2>
-      <button onClick={() => void regenerateWeeklyTasks()}>주간 할 일 재생성</button>
+    <div style={ui.page}>
+      <h2 style={ui.title}>홈 대시보드</h2>
+      <button
+        onClick={() => void regenerateWeeklyTasks()}
+        style={{
+          width: "100%",
+          border: "none",
+          borderRadius: 12,
+          padding: "12px 14px",
+          background: colors.primary,
+          color: "#fff",
+          fontWeight: 700,
+          cursor: "pointer",
+        }}
+      >
+        이번 주 할 일 재생성
+      </button>
 
-      <h3>이번 주 할 일</h3>
-      <ul>
-        {data.weekTasks.map((t) => (
-          <li key={t.id}>
-            <label>
-              <input
-                type="checkbox"
-                checked={t.checked}
-                onChange={(e) => void toggleTask(t.id, e.target.checked)}
-              />
-              [{t.priority}] {t.title}
-            </label>
-          </li>
-        ))}
-      </ul>
+      <h3 style={ui.sectionTitle}>이번 주 할 일</h3>
+      {data.weekTasks.map((t) => (
+        <div key={t.id} style={ui.card}>
+          <label style={{ display: "flex", gap: 10, alignItems: "center", cursor: "pointer" }}>
+            <input
+              type="checkbox"
+              checked={t.checked}
+              onChange={(e) => void toggleTask(t.id, e.target.checked)}
+            />
+            <div>
+              <div style={{ fontWeight: 600, color: colors.text }}>{t.title}</div>
+              <div style={{ fontSize: 12, color: priorityColor(t.priority), marginTop: 4 }}>
+                {t.priority.toUpperCase()} {t.dueText ? `· ${t.dueText}` : ""}
+              </div>
+            </div>
+          </label>
+        </div>
+      ))}
 
-      <h3>지표</h3>
-      <pre>{JSON.stringify(data.metrics, null, 2)}</pre>
+      <h3 style={ui.sectionTitle}>핵심 지표</h3>
+      {Object.entries(data.metrics).map(([k, v]) => (
+        <div key={k} style={ui.card}>
+          <div style={{ fontSize: 12, color: colors.subText }}>{k}</div>
+          <div style={{ marginTop: 4, fontWeight: 700, color: colors.text }}>{v.value}</div>
+          <div style={{ marginTop: 4, fontSize: 12, color: colors.subText }}>trend: {v.trend}</div>
+        </div>
+      ))}
 
-      <h3>알림</h3>
-      <ul>
-        {data.alerts.map((a) => (
-          <li key={a.id}>[{a.severity}] {a.message}</li>
-        ))}
-      </ul>
+      <h3 style={ui.sectionTitle}>리스크 알림</h3>
+      {data.alerts.map((a) => (
+        <div key={a.id} style={ui.card}>
+          <div style={{ color: colors.text }}>{a.message}</div>
+          <div style={{ fontSize: 12, marginTop: 4, color: colors.subText }}>
+            {a.severity.toUpperCase()} {a.actionLabel ? `· ${a.actionLabel}` : ""}
+          </div>
+        </div>
+      ))}
     </div>
   );
 }

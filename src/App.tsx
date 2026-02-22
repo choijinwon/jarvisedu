@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { HomeScreen, LogScreen, ScoreScreen, StrategyScreen } from "./screens";
+import { colors } from "./styles";
 
 type TabKey = "home" | "score" | "log" | "strategy";
 
@@ -14,7 +15,7 @@ export default function App() {
   const [tab, setTab] = useState<TabKey>("home");
 
   return (
-    <div style={{ maxWidth: 720, margin: "0 auto", paddingBottom: 72, fontFamily: "sans-serif" }}>
+    <div style={{ maxWidth: 720, margin: "0 auto", paddingBottom: 72, fontFamily: "Pretendard, -apple-system, BlinkMacSystemFont, sans-serif", background: colors.bg }}>
       {tab === "home" && <HomeScreen />}
       {tab === "score" && <ScoreScreen />}
       {tab === "log" && <LogScreen />}
@@ -26,7 +27,7 @@ export default function App() {
           left: 0,
           right: 0,
           bottom: 0,
-          borderTop: "1px solid #e5e7eb",
+          borderTop: `1px solid ${colors.border}`,
           background: "#fff",
           display: "flex",
           justifyContent: "space-around",
@@ -41,7 +42,7 @@ export default function App() {
               border: "none",
               background: "transparent",
               fontWeight: tab === t.key ? 700 : 400,
-              color: tab === t.key ? "#2563eb" : "#374151",
+              color: tab === t.key ? colors.primary : "#374151",
               cursor: "pointer",
             }}
           >
