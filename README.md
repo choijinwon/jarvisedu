@@ -29,3 +29,23 @@ cp .env.example .env
 
 환경변수가 없으면 자동으로 mock API를 사용하고,
 환경변수가 있으면 Supabase API를 사용합니다.
+
+## 배포 (Vercel)
+이 레포는 `vercel.json` 포함되어 있어 바로 배포 가능합니다.
+
+1) Vercel에서 프로젝트 Import (GitHub: `choijinwon/jarvisedu`)
+2) Build Settings (자동 감지됨)
+   - Framework: Vite
+   - Build: `npm run build`
+   - Output: `dist`
+3) Environment Variables 추가
+   - `VITE_SUPABASE_URL`
+   - `VITE_SUPABASE_ANON_KEY`
+4) Deploy
+
+CLI로 배포하려면 로컬에서:
+```bash
+npm i -g vercel
+vercel
+vercel --prod
+```
