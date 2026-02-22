@@ -95,7 +95,8 @@ function recomputeDashboard(): DashboardData {
     alerts.push({ id: uid("a"), severity: "warning", message: "모의 성적 입력이 60일 이상 비어 있어요", actionLabel: "모의 입력" });
   }
 
-  const latestReport = reportsDB.sort((a, b) => a.generatedAt.localeCompare(b.generatedAt)).at(-1);
+  const sortedReports = reportsDB.sort((a, b) => a.generatedAt.localeCompare(b.generatedAt));
+  const latestReport = sortedReports[sortedReports.length - 1];
   if (latestReport) {
     const reportDate = latestReport.generatedAt.slice(0, 10);
     if (daysDiff(reportDate, now) > 30) {
@@ -211,7 +212,7 @@ export const mockApi = {
     }
 
     const mockList = scoresDB.filter((s) => s.type === "모의").sort((a, b) => a.date.localeCompare(b.date));
-    const latestMock = mockList.at(-1);
+    const latestMock = mockList[mockList.length - 1];
     if (!latestMock || daysDiff(latestMock.date, now) > 60) {
       newTasks.push({ id: uid("t"), userId: userDB.id, weekStart, title: "최근 모의 성적 1회 입력 + 강약점 1줄", priority: "high", checked: false, linkedType: "score", ruleCode: "R002_NO_MOCK_60D", dueText: "금요일까지" });
     }

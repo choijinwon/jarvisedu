@@ -1,8 +1,19 @@
 # jarvisedu
 
-고등 진학상담 앱 MVP를 위한 타입/목업 데이터/mock API 템플릿.
+고등 진학상담 앱 MVP 템플릿 (React + TypeScript + Vite).
 
 ## 포함 파일
 - `src/types.ts`
 - `src/mocks/*`
 - `src/services/mockApi.ts`
+- `src/hooks/*`
+- `src/screens/*`
+- `src/App.tsx`
+
+## 실행
+```bash
+npm install
+npm run dev
+```
+
+브라우저에서 `http://localhost:5173` 열면 탭 기반 데모를 확인할 수 있습니다.
