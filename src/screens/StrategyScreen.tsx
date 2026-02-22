@@ -1,5 +1,5 @@
 import React from "react";
-import { useStrategy } from "../hooks/useStrategy";
+import { useEntitlements, useStrategy } from "../hooks";
 import { colors, typo, ui } from "../styles";
 import { useReport } from "../hooks/useReport";
 import { openReportPrintView } from "../utils/pdf";
@@ -7,9 +7,21 @@ import { openReportPrintView } from "../utils/pdf";
 export function StrategyScreen() {
   const { strategy, loading, error, update } = useStrategy();
   const { report, loading: reportLoading, generate } = useReport();
+  const { entitlements } = useEntitlements();
+
+  const monthKey = new Date().toISOString().slice(0, 7);
+  const usageKey = `jarvisedu_report_usage_${monthKey}`;
+  const usedCount = Number(localStorage.getItem(usageKey) || "0");
+  const isLimited = !entitlements.canUseUnlimitedReports;
+  const reachedLimit = isLimited && usedCount >= entitlements.monthlyReportLimit;
 
   const handleGeneratePdf = async () => {
+    if (reachedLimit) {
+      alert("Free 플랜은 월 1회 리포트만 생성할 수 있어요. 요금 탭에서 Pro 시뮬레이션을 켜보세요.");
+      return;
+    }
     const r = await generate();
+    localStorage.setItem(usageKey, String(usedCount + 1));
     openReportPrintView(r);
   };
 
@@ -47,9 +59,12 @@ export function StrategyScreen() {
         <p style={{ ...typo.body, marginTop: 8 }}>{strategy.hypothesisText}</p>
       </div>
 
-      <button onClick={() => void handleGeneratePdf()} style={{ ...ui.buttonPrimary }} disabled={reportLoading}>
-        {reportLoading ? "리포트 생성 중..." : "상담 리포트 PDF 생성"}
+      <button onClick={() => void handleGeneratePdf()} style={{ ...ui.buttonPrimary, opacity: reachedLimit ? 0.6 : 1 }} disabled={reportLoading || reachedLimit}>
+        {reportLoading ? "리포트 생성 중..." : reachedLimit ? "Free 월간 한도 도달" : "상담 리포트 PDF 생성"}
       </button>
+      <p style={{ ...typo.caption, marginTop: 6 }}>
+        {isLimited ? `Free 사용량: ${usedCount}/${entitlements.monthlyReportLimit}` : "Pro: 리포트 무제한"}
+      </p>
 
       {report && (
         <div style={{ ...ui.card, marginTop: 10 }}>

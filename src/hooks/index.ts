@@ -4,3 +4,4 @@ export * from "./useLogs";
 export * from "./useStrategy";
 export * from "./useReport";
 export * from "./useHealth";
+export * from "./useEntitlements";

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { HomeScreen, LogScreen, PricingScreen, ScoreScreen, StrategyScreen } from "./screens";
 import { colors } from "./styles";
-import { useHealth } from "./hooks";
+import { useEntitlements, useHealth } from "./hooks";
 import { PaywallModal } from "./components";
 
 type TabKey = "home" | "score" | "log" | "strategy" | "pricing";
@@ -19,6 +19,7 @@ export default function App() {
   const [cycle, setCycle] = useState<"monthly" | "yearly">("monthly");
   const [paywallOpen, setPaywallOpen] = useState(false);
   const { status, source } = useHealth();
+  const { plan, upgradeToPro, downgradeToFree } = useEntitlements();
 
   const badgeColor =
     status === "ok" ? "#16A34A" : status === "error" ? "#DC2626" : "#64748B";
@@ -37,7 +38,7 @@ export default function App() {
             fontWeight: 700,
           }}
         >
-          DB {source.toUpperCase()} · {status.toUpperCase()}
+          DB {source.toUpperCase()} · {status.toUpperCase()} · PLAN {plan.toUpperCase()}
         </span>
       </div>
       {tab === "home" && <HomeScreen />}
@@ -47,8 +48,10 @@ export default function App() {
       {tab === "pricing" && (
         <PricingScreen
           cycle={cycle}
+          plan={plan}
           onChangeCycle={setCycle}
           onStartPro={() => setPaywallOpen(true)}
+          onResetFree={downgradeToFree}
         />
       )}
 
@@ -56,8 +59,9 @@ export default function App() {
         open={paywallOpen}
         onClose={() => setPaywallOpen(false)}
         onStart={() => {
+          upgradeToPro();
           setPaywallOpen(false);
-          alert("결제 연동 전입니다. 다음 단계에서 결제 SDK를 연결해요.");
+          alert("Pro 시뮬레이션 활성화 완료 (결제 연동 전)");
         }}
       />
 

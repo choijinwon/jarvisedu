@@ -5,17 +5,38 @@ type BillingCycle = "monthly" | "yearly";
 
 interface PricingScreenProps {
   cycle: BillingCycle;
+  plan: "free" | "pro";
   onChangeCycle: (v: BillingCycle) => void;
   onStartPro: () => void;
+  onResetFree: () => void;
 }
 
-export function PricingScreen({ cycle, onChangeCycle, onStartPro }: PricingScreenProps) {
+export function PricingScreen({ cycle, plan, onChangeCycle, onStartPro, onResetFree }: PricingScreenProps) {
   const proPrice = cycle === "monthly" ? "₩12,900 / 월" : "₩119,000 / 년";
 
   return (
     <div style={ui.page}>
       <h2 style={typo.h1}>요금제</h2>
       <p style={{ ...typo.caption, marginTop: 6 }}>진학은 정보가 아니라 실행입니다.</p>
+      <div style={{ ...ui.card, marginTop: 10 }}>
+        <div style={{ ...typo.caption }}>현재 플랜</div>
+        <div style={{ ...typo.h2, marginTop: 4 }}>{plan.toUpperCase()}</div>
+        {plan === "pro" ? (
+          <button
+            onClick={onResetFree}
+            style={{
+              marginTop: 10,
+              border: `1px solid ${colors.border}`,
+              background: "#fff",
+              borderRadius: 10,
+              padding: "8px 12px",
+              fontWeight: 700,
+            }}
+          >
+            FREE로 되돌리기(시뮬레이션)
+          </button>
+        ) : null}
+      </div>
 
       <div style={{ ...ui.card, marginTop: 12 }}>
         <div style={{ display: "flex", gap: 8 }}>
