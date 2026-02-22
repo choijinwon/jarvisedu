@@ -1,6 +1,6 @@
 import { useCallback, useState } from "react";
 import { ReportSnapshot } from "../types";
-import { mockApi } from "../services/mockApi";
+import { dataApi } from "../services/dataApi";
 
 export function useReport() {
   const [report, setReport] = useState<ReportSnapshot | null>(null);
@@ -11,7 +11,7 @@ export function useReport() {
     try {
       setLoading(true);
       setError(null);
-      const r = await mockApi.generateReport();
+      const r = await dataApi.generateReport();
       setReport(r);
       return r;
     } catch (e) {

@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { StrategyState } from "../types";
-import { mockApi } from "../services/mockApi";
+import { dataApi } from "../services/dataApi";
 
 export function useStrategy() {
   const [strategy, setStrategy] = useState<StrategyState | null>(null);
@@ -11,7 +11,7 @@ export function useStrategy() {
     try {
       setLoading(true);
       setError(null);
-      const data = await mockApi.getStrategy();
+      const data = await dataApi.getStrategy();
       setStrategy(data);
     } catch (e) {
       setError(e instanceof Error ? e.message : "Failed to load strategy");
@@ -25,7 +25,7 @@ export function useStrategy() {
   }, [load]);
 
   const update = useCallback(async (patch: Partial<StrategyState>) => {
-    const updated = await mockApi.updateStrategy(patch);
+    const updated = await dataApi.updateStrategy(patch);
     setStrategy(updated);
     return updated;
   }, []);

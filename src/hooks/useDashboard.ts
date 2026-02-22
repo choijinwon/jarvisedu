@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { DashboardData } from "../types";
-import { mockApi } from "../services/mockApi";
+import { dataApi } from "../services/dataApi";
 
 export function useDashboard() {
   const [data, setData] = useState<DashboardData | null>(null);
@@ -11,7 +11,7 @@ export function useDashboard() {
     try {
       setLoading(true);
       setError(null);
-      const res = await mockApi.getDashboard();
+      const res = await dataApi.getDashboard();
       setData(res);
     } catch (e) {
       setError(e instanceof Error ? e.message : "Failed to load dashboard");
@@ -25,12 +25,12 @@ export function useDashboard() {
   }, [load]);
 
   const toggleTask = useCallback(async (taskId: string, checked: boolean) => {
-    await mockApi.toggleTask(taskId, checked);
+    await dataApi.toggleTask(taskId, checked);
     await load();
   }, [load]);
 
   const regenerateWeeklyTasks = useCallback(async () => {
-    await mockApi.generateWeeklyTasks();
+    await dataApi.generateWeeklyTasks();
     await load();
   }, [load]);
 

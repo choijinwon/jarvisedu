@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { ScoreEntry, ScoreType } from "../types";
-import { mockApi } from "../services/mockApi";
+import { dataApi } from "../services/dataApi";
 
 export function useScores(type?: ScoreType) {
   const [scores, setScores] = useState<ScoreEntry[]>([]);
@@ -11,7 +11,7 @@ export function useScores(type?: ScoreType) {
     try {
       setLoading(true);
       setError(null);
-      const rows = await mockApi.listScores(type);
+      const rows = await dataApi.listScores(type);
       setScores(rows);
     } catch (e) {
       setError(e instanceof Error ? e.message : "Failed to load scores");

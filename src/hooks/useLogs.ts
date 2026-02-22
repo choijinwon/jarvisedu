@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { LogEntry } from "../types";
-import { mockApi } from "../services/mockApi";
+import { dataApi } from "../services/dataApi";
 
 export type CreateLogInput = Omit<LogEntry, "id">;
 
@@ -13,7 +13,7 @@ export function useLogs() {
     try {
       setLoading(true);
       setError(null);
-      const rows = await mockApi.listLogs();
+      const rows = await dataApi.listLogs();
       setLogs(rows);
     } catch (e) {
       setError(e instanceof Error ? e.message : "Failed to load logs");
@@ -27,7 +27,7 @@ export function useLogs() {
   }, [load]);
 
   const createLog = useCallback(async (input: CreateLogInput) => {
-    await mockApi.createLog(input);
+    await dataApi.createLog(input);
     await load();
   }, [load]);
 
