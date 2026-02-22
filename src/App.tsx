@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { HomeScreen, LogScreen, ScoreScreen, StrategyScreen } from "./screens";
 import { colors } from "./styles";
+import { useHealth } from "./hooks";
 
 type TabKey = "home" | "score" | "log" | "strategy";
 
@@ -13,9 +14,28 @@ const tabs: Array<{ key: TabKey; label: string }> = [
 
 export default function App() {
   const [tab, setTab] = useState<TabKey>("home");
+  const { status, source } = useHealth();
+
+  const badgeColor =
+    status === "ok" ? "#16A34A" : status === "error" ? "#DC2626" : "#64748B";
 
   return (
     <div style={{ maxWidth: 720, margin: "0 auto", paddingBottom: 72, fontFamily: "Pretendard, -apple-system, BlinkMacSystemFont, sans-serif", background: colors.bg }}>
+      <div style={{ padding: "10px 16px 0 16px", display: "flex", justifyContent: "flex-end" }}>
+        <span
+          style={{
+            fontSize: 12,
+            border: `1px solid ${colors.border}`,
+            background: "#fff",
+            color: badgeColor,
+            borderRadius: 999,
+            padding: "4px 10px",
+            fontWeight: 700,
+          }}
+        >
+          DB {source.toUpperCase()} · {status.toUpperCase()}
+        </span>
+      </div>
       {tab === "home" && <HomeScreen />}
       {tab === "score" && <ScoreScreen />}
       {tab === "log" && <LogScreen />}
