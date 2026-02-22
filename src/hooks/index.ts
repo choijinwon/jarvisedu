@@ -5,3 +5,4 @@ export * from "./useStrategy";
 export * from "./useReport";
 export * from "./useHealth";
 export * from "./useEntitlements";
+export * from "./useSchools";

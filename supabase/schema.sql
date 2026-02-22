@@ -99,3 +99,33 @@ create policy "mvp_all_strategy_states" on public.strategy_states for all using 
 
 drop policy if exists "mvp_all_report_snapshots" on public.report_snapshots;
 create policy "mvp_all_report_snapshots" on public.report_snapshots for all using (true) with check (true);
+
+create table if not exists public.target_schools (
+  id text primary key,
+  user_id text not null references public.user_profiles(id) on delete cascade,
+  school_name text not null,
+  major_name text not null,
+  bucket text not null check (bucket in ('상향','적정','안정')),
+  admission_type text not null,
+  memo text,
+  created_at timestamptz not null default now()
+);
+
+create table if not exists public.school_fit_scores (
+  id text primary key,
+  target_school_id text not null references public.target_schools(id) on delete cascade,
+  gpa_fit int not null,
+  csat_fit int not null,
+  record_fit int not null,
+  overall_fit int not null,
+  updated_at timestamptz not null default now()
+);
+
+alter table public.target_schools enable row level security;
+alter table public.school_fit_scores enable row level security;
+
+drop policy if exists "mvp_all_target_schools" on public.target_schools;
+create policy "mvp_all_target_schools" on public.target_schools for all using (true) with check (true);
+
+drop policy if exists "mvp_all_school_fit_scores" on public.school_fit_scores;
+create policy "mvp_all_school_fit_scores" on public.school_fit_scores for all using (true) with check (true);
